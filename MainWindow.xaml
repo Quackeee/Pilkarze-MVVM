@@ -6,34 +6,85 @@
         
         xmlns:vm="clr-namespace:Pilkarze_MVVM.ViewModel"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         
         xmlns:local="clr-namespace:Pilkarze_MVVM"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         >
-    <!-- powyżej oddzielone jest ważne -->
+    <!-- powyżej to, co oddzielone jest ważne -->
+
+    <!--
     
+    Możnaby zrobić to tak:
     
-    <!-- to trzeba dodać -->
+    <Window.DataContext>
+        <vm:PilkarzeWidok/>
+    </Window.DataContext>
+    
+    ale zrobię DataContext dopiero w Gridzie
+    -->
+    
     <Window.Resources>
-        <vm:PilkarzeWidok x:Key="widok"/>
+        <!-- deklaracja źródła bindingów -->
+        <vm:PilkarzeWidok x:Key="Widok"/>
+
+        <!-- szary napis kiedy odpowiedni text -->
+        <Style x:Key="ImieOrNazwisko" TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Text" Value="Podaj imie">
+                    <Setter Property = "Foreground" Value="DarkGray"/>
+                </Trigger>
+                <Trigger Property="Text" Value="Podaj nazwisko">
+                    <Setter Property = "Foreground" Value="DarkGray"/>
+                </Trigger>
+
+        <!-- szary napis kiedy odpowiedni text -->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsFocused" Value="false"/>
+                        <Condition Property="Text" Value="{x:Static sys:String.Empty}"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="BorderBrush" Value="Red"/>
+                    <Setter Property="BorderThickness" Value="3"/>
+                </MultiTrigger>
+                
+            </Style.Triggers>
+        </Style>
+        
     </Window.Resources>
 
-    <Grid DataContext="{StaticResource widok}">
-    <!-- koniec -->
-        
-        
+
+
+    <Grid DataContext="{StaticResource Widok}">
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
         <StackPanel>
             <Label Content="Imię:" FontSize="12"/>
-            <TextBox x:Name="imie_tb" Foreground="DarkGray" Margin="5"
-                    Text="{ Binding Path=Imie, Mode=TwoWay}"/>
+            <TextBox Style="{StaticResource ImieOrNazwisko}" Margin="5"
+                    Text="{Binding Path=Imie, Mode=TwoWay}">
+
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="GotFocus">
+                        <i:InvokeCommandAction Command="{Binding ClearImie}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+            </TextBox>
             <Label Content="Nazwisko:" FontSize="12"/>
-            <TextBox x:Name="nazwisko_tb" Foreground="DarkGray" Margin="5"
-                    Text="{Binding Path=Nazwisko, Mode=TwoWay}"/>
+            <TextBox Style="{StaticResource ImieOrNazwisko}" Margin="5"
+                    Text="{Binding Path=Nazwisko, Mode=TwoWay}">
+
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="GotFocus">
+                        <i:InvokeCommandAction Command="{Binding ClearNazwisko}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+            </TextBox>
             <Label Content="Wiek:" FontSize="12"/>
             <ComboBox x:Name="wiek_cb" Margin="5"
                       ItemsSource="{Binding Path=WiekTable}"
@@ -49,9 +100,32 @@
                         Value="{Binding Path=Waga, Mode=TwoWay}"/>
             </Grid>
             <Button Content="Dodaj" Margin="10" Command="{Binding AddPlayer}"/>
-            <Button Content="Modyfikuj" Margin="10"/>
-            <Button Content="Usuń" Margin="10"/>
+            <Button Content="Modyfikuj" Margin="10" Command="{Binding ModifyPlayer}"/>
+            <Button Content="Usuń" Margin="10" Command="{Binding DeletePlayer}"/>
         </StackPanel>
-        <ListBox Grid.Column="1" Margin="5" x:Name="pilkarze_lb" ItemsSource="{Binding Path=ListaPilkarzy}"/>
+        
+        <ListView  Grid.Column="1" Margin="5" ItemsSource="{Binding ListaPilkarzy}" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}" >
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="{Binding Imie}"></Label>
+                        <Label Content="{Binding Nazwisko}"></Label>
+                        <Label Content="{Binding Wiek}"></Label>
+                        <Label Content="{Binding Waga}"></Label>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            
+
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="GotFocus">
+                    <i:InvokeCommandAction Command="{Binding LoadPlayer}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding LoadPlayer}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+
+        </ListView>
     </Grid>
 </Window>

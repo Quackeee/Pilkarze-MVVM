@@ -27,22 +27,19 @@ namespace Pilkarze_MVVM.Model
         public void modifyPlayer(int index, string imie, string nazwisko, int wiek, double waga)
         {
             Pilkarz pilkarz = _listaPilkarzy[index];
-
-            //if (MessageBox.Show("Czy jesteś pewien, że chcesz zmodyfikować zawodnika?", "Modyfikacja zawodnika", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             pilkarz.Imie = imie;
             pilkarz.Nazwisko = nazwisko;
             pilkarz.Wiek = wiek;
             pilkarz.Waga = waga;
         }
+
         public void addPlayer(string imie, string nazwisko, int wiek, double waga)
         {
             _listaPilkarzy.Add(new Pilkarz(imie,nazwisko,wiek,waga));
         }
         public void deletePlayer(int index)
         {
-            //if (MessageBox.Show("Czy jesteś pewien, że chcesz usunąć zawodnika?", "Usuwanie zawodnika", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             _listaPilkarzy.RemoveAt(index);
-            //MessageBox.Show("Nie wybrano żadnego zawodnika", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         public void save()
         {
