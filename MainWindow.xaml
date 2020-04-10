@@ -1,0 +1,57 @@
+﻿<Window x:Class="Pilkarze_MVVM.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        
+        xmlns:vm="clr-namespace:Pilkarze_MVVM.ViewModel"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        
+        xmlns:local="clr-namespace:Pilkarze_MVVM"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+        >
+    <!-- powyżej oddzielone jest ważne -->
+    
+    
+    <!-- to trzeba dodać -->
+    <Window.Resources>
+        <vm:PilkarzeWidok x:Key="widok"/>
+    </Window.Resources>
+
+    <Grid DataContext="{StaticResource widok}">
+    <!-- koniec -->
+        
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel>
+            <Label Content="Imię:" FontSize="12"/>
+            <TextBox x:Name="imie_tb" Foreground="DarkGray" Margin="5"
+                    Text="{ Binding Path=Imie, Mode=TwoWay}"/>
+            <Label Content="Nazwisko:" FontSize="12"/>
+            <TextBox x:Name="nazwisko_tb" Foreground="DarkGray" Margin="5"
+                    Text="{Binding Path=Nazwisko, Mode=TwoWay}"/>
+            <Label Content="Wiek:" FontSize="12"/>
+            <ComboBox x:Name="wiek_cb" Margin="5"
+                      ItemsSource="{Binding Path=WiekTable}"
+                      SelectedValue="{Binding Path=Wiek, Mode=TwoWay}"/>
+            <Label Content="Wiek:" FontSize="12" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="74*"/>
+                    <ColumnDefinition Width="25*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="1" x:Name="waga_lbl" Content="{Binding Path=Waga}"/>
+                <Slider x:Name="waga_sdr" Maximum="100" Minimum="55" TickFrequency="0.1" IsSnapToTickEnabled="True" Margin="5"
+                        Value="{Binding Path=Waga, Mode=TwoWay}"/>
+            </Grid>
+            <Button Content="Dodaj" Margin="10" Command="{Binding AddPlayer}"/>
+            <Button Content="Modyfikuj" Margin="10"/>
+            <Button Content="Usuń" Margin="10"/>
+        </StackPanel>
+        <ListBox Grid.Column="1" Margin="5" x:Name="pilkarze_lb" ItemsSource="{Binding Path=ListaPilkarzy}"/>
+    </Grid>
+</Window>
