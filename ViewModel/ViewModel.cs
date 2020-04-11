@@ -18,7 +18,7 @@ namespace Pilkarze_MVVM.ViewModel
         private int _wiek = 15;
         private double _waga = 55;
         private int _selectedIndex;
-
+        
         public string Imie
         {
             get => _imie;
@@ -46,7 +46,7 @@ namespace Pilkarze_MVVM.ViewModel
         }
         public int[] WiekTable
         { get => pilkarze.WiekTable; }
-        public ObservableCollection<Pilkarz> ListaPilkarzy
-        { get => pilkarze.ListaPilkarzy; } 
+        public ObservableCollection<WidokPilkarza> ListaPilkarzy
+        { get => ViewModelUtils.PlayerListToVM(pilkarze.ListaPilkarzy); } 
     }
 }

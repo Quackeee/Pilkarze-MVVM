@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Pilkarze_MVVM.Model
 {
-    class Pilkarz : ViewModel.ViewModelBase
+    class Pilkarz
     {
         private string _imie;
         private string _nazwisko;
@@ -36,9 +36,9 @@ namespace Pilkarze_MVVM.Model
             return String.Format($"{Imie} {Nazwisko} {Wiek} {Waga}kg");
         }
 
-        public string Imie {get => _imie; set { _imie = value; onPropertyChanged(nameof(Imie)); } }
-        public string Nazwisko { get => _nazwisko; set { _nazwisko = value; onPropertyChanged(nameof(Nazwisko)); } }
-        public double Waga { get => _waga; set { _waga = value; onPropertyChanged(nameof(Waga)); } }
-        public int Wiek { get => _wiek; set { _wiek = value; onPropertyChanged(nameof(Wiek)); } }
+        public string Imie {get => _imie; set { _imie = value; } }
+        public string Nazwisko { get => _nazwisko; set { _nazwisko = value; } }
+        public double Waga { get => _waga; set { _waga = value; } }
+        public int Wiek { get => _wiek; set { _wiek = value; } }
     }
 }

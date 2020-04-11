@@ -78,6 +78,7 @@
     </ApplicationDefinition>
     <Compile Include="Model\ModelUtils.cs" />
     <Compile Include="ViewModel\CommandDefinitions.cs" />
+    <Compile Include="ViewModel\PilkarzViewModel.cs" />
     <Compile Include="ViewModel\ViewModel.cs" />
     <Compile Include="ViewModel\ViewModelUtils.cs" />
     <Page Include="MainWindow.xaml">

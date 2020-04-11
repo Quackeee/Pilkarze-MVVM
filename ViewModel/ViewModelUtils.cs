@@ -1,9 +1,22 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 
 namespace Pilkarze_MVVM.ViewModel
 {
+    class ViewModelUtils
+    {
+        public static ObservableCollection<WidokPilkarza> PlayerListToVM(ObservableCollection<Model.Pilkarz> listaPilkarzy)
+        {
+            ObservableCollection<WidokPilkarza> listaWidokowPilkarzy = new ObservableCollection<WidokPilkarza>();
+            foreach (Model.Pilkarz pilkarz in listaPilkarzy)
+            {
+                listaWidokowPilkarzy.Add(new WidokPilkarza(pilkarz));
+            }
+            return listaWidokowPilkarzy;
+        }
+    }
     class ViewModelBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
