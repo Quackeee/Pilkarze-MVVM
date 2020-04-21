@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Pilkarze_MVVM.ViewModel
 {
     using Model;
@@ -11,18 +12,19 @@ namespace Pilkarze_MVVM.ViewModel
 
     internal partial class PilkarzeWidok : ViewModelBase
     {
-        private Pilkarze pilkarze = new Model.Pilkarze();
-
+        private string _saveFileName = "./data.json";
         private string _imie = "Podaj imie";
-        private string _nazwisko  = "Podaj nazwisko";
+        private string _nazwisko = "Podaj nazwisko";
         private int _wiek = 15;
         private double _waga = 55;
         private int _selectedIndex;
-        
+        private ObservableCollection<WidokPilkarza> _pilkarze = null;
+        private int[] _wiekTable = ViewModelUtils.wiek();
+
         public string Imie
         {
             get => _imie;
-            set { _imie = value; }
+            set { _imie = value;}
         }
         public string Nazwisko
         {
@@ -37,16 +39,25 @@ namespace Pilkarze_MVVM.ViewModel
         public double Waga
         {
             get => _waga;
-            set { _waga = value; onPropertyChanged(nameof(Waga)); }
+            set { _waga = value; OnPropertyChanged(nameof(Waga)); }
         }
         public int SelectedIndex
         {
             get => _selectedIndex;
-            set { _selectedIndex = value; onPropertyChanged(nameof(SelectedIndex)); }
+            set { _selectedIndex = value; }
         }
         public int[] WiekTable
-        { get => pilkarze.WiekTable; }
+        { get => _wiekTable; }
         public ObservableCollection<WidokPilkarza> ListaPilkarzy
-        { get => ViewModelUtils.PlayerListToVM(pilkarze.ListaPilkarzy); } 
+        { get
+            {if (_pilkarze == null)
+                {
+                    _pilkarze = new ObservableCollection<WidokPilkarza>();
+                    load();
+                }
+                return _pilkarze;
+            }
+            
+        } 
     }
 }

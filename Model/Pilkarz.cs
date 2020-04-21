@@ -21,6 +21,14 @@ namespace Pilkarze_MVVM.Model
             this._waga = waga;
         }
 
+        public Pilkarz()
+        {
+            this._imie = "Cristiano";
+            this._nazwisko = "Ronaldo";
+            this._wiek = 15;
+            this._waga = 55;
+        }
+
         public Pilkarz (string pilkarz)
         {
             string[] words = pilkarz.Split();
@@ -28,7 +36,6 @@ namespace Pilkarze_MVVM.Model
             this._nazwisko = words[1];
             this._wiek = Convert.ToInt32(words[2]);
             this._waga = Convert.ToDouble(words[3]);
-
         }
 
         public override string ToString()

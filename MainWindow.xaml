@@ -8,25 +8,11 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         
-        xmlns:local="clr-namespace:Pilkarze_MVVM"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         >
-    <!-- powyżej to, co oddzielone jest ważne -->
 
-    <!--
-    
-    Możnaby zrobić to tak:
-    
-    <Window.DataContext>
-        <vm:PilkarzeWidok/>
-    </Window.DataContext>
-    
-    ale zrobię DataContext dopiero w Gridzie
-    -->
-    
     <Window.Resources>
-        <!-- deklaracja źródła bindingów -->
         <vm:PilkarzeWidok x:Key="Widok"/>
 
         <!-- szary napis kiedy odpowiedni text -->
@@ -56,7 +42,7 @@
 
 
 
-    <Grid DataContext="{StaticResource Widok}">
+    <Grid x:Name="GridRoot" DataContext="{StaticResource Widok}">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
@@ -64,7 +50,7 @@
         </Grid.ColumnDefinitions>
         <StackPanel>
             <Label Content="Imię:" FontSize="12"/>
-            <TextBox Style="{StaticResource ImieOrNazwisko}" Margin="5"
+            <TextBox  Style="{StaticResource ImieOrNazwisko}" ToolTip="Podaj imię" Margin="5"
                     Text="{Binding Path=Imie, Mode=TwoWay}">
 
                 <i:Interaction.Triggers>
@@ -75,7 +61,7 @@
 
             </TextBox>
             <Label Content="Nazwisko:" FontSize="12"/>
-            <TextBox Style="{StaticResource ImieOrNazwisko}" Margin="5"
+            <TextBox Style="{StaticResource ImieOrNazwisko}" ToolTip="Podaj nazwisko" Margin="5"
                     Text="{Binding Path=Nazwisko, Mode=TwoWay}">
 
                 <i:Interaction.Triggers>
@@ -86,46 +72,54 @@
 
             </TextBox>
             <Label Content="Wiek:" FontSize="12"/>
-            <ComboBox x:Name="wiek_cb" Margin="5"
-                      ItemsSource="{Binding Path=WiekTable}"
-                      SelectedValue="{Binding Path=Wiek, Mode=TwoWay}"/>
+            <ComboBox Margin="5" ItemsSource="{Binding Path=WiekTable}" SelectedValue="{Binding Path=Wiek, Mode=TwoWay}"/>
+            
             <Label Content="Wiek:" FontSize="12" />
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="74*"/>
                     <ColumnDefinition Width="25*"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="1" x:Name="waga_lbl" Content="{Binding Path=Waga}"/>
-                <Slider x:Name="waga_sdr" Maximum="100" Minimum="55" TickFrequency="0.1" IsSnapToTickEnabled="True" Margin="5"
+                <Label Grid.Column="1" Content="{Binding Path=Waga}"/>
+                <Slider Maximum="100" Minimum="55" TickFrequency="0.1" IsSnapToTickEnabled="True" Margin="5"
                         Value="{Binding Path=Waga, Mode=TwoWay}"/>
             </Grid>
             <Button Content="Dodaj" Margin="10" Command="{Binding AddPlayer}"/>
             <Button Content="Modyfikuj" Margin="10" Command="{Binding ModifyPlayer}"/>
             <Button Content="Usuń" Margin="10" Command="{Binding DeletePlayer}"/>
         </StackPanel>
-        
+
         <ListView  Grid.Column="1" Margin="5" ItemsSource="{Binding ListaPilkarzy}" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}" >
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="{Binding Imie}"></Label>
-                        <Label Content="{Binding Nazwisko}"></Label>
-                        <Label Content="{Binding Wiek}"></Label>
-                        <Label Content="{Binding Waga}"></Label>
+                        <Label Content="{Binding Imie}"/>
+                        <Label Content="{Binding Nazwisko}"/>
+                        <Label Content="{Binding Wiek}"/>
+                        <Label Content="{Binding Waga}"/>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
-            
+
 
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="GotFocus">
                     <i:InvokeCommandAction Command="{Binding LoadPlayer}"/>
                 </i:EventTrigger>
+
                 <i:EventTrigger EventName="SelectionChanged">
                     <i:InvokeCommandAction Command="{Binding LoadPlayer}"/>
                 </i:EventTrigger>
+
             </i:Interaction.Triggers>
 
         </ListView>
     </Grid>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding ElementName=GridRoot, Path = DataContext.Save}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
 </Window>

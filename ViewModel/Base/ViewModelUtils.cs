@@ -7,14 +7,16 @@ namespace Pilkarze_MVVM.ViewModel
 {
     class ViewModelUtils
     {
-        public static ObservableCollection<WidokPilkarza> PlayerListToVM(ObservableCollection<Model.Pilkarz> listaPilkarzy)
+        public static int[] wiek()
         {
-            ObservableCollection<WidokPilkarza> listaWidokowPilkarzy = new ObservableCollection<WidokPilkarza>();
-            foreach (Model.Pilkarz pilkarz in listaPilkarzy)
+            int[] wiek = new int[41];
+            int i = 15;
+            for (int j = 0; j <= 40; j++)
             {
-                listaWidokowPilkarzy.Add(new WidokPilkarza(pilkarz));
+                wiek[j] = i;
+                i++;
             }
-            return listaWidokowPilkarzy;
+            return wiek;
         }
     }
     class ViewModelBase : INotifyPropertyChanged
@@ -22,7 +24,7 @@ namespace Pilkarze_MVVM.ViewModel
         public event PropertyChangedEventHandler PropertyChanged;
 
         //metoda zgłaszająca zmiany we własnościach podanych jako argumenty
-        protected void onPropertyChanged(params string[] namesOfProperties)
+        protected void OnPropertyChanged(params string[] namesOfProperties)
         {
             if (PropertyChanged != null)
             {
@@ -33,7 +35,6 @@ namespace Pilkarze_MVVM.ViewModel
             }
         }
     }
-
     class RelayCommand : ICommand
     {
         readonly Action<object> _execute;

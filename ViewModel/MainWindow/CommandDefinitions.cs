@@ -1,19 +1,23 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using Microsoft.Win32;
+using Pilkarze_MVVM.Model;
+using System.Collections.Generic;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace Pilkarze_MVVM.ViewModel
 {
-    using Model;
     internal partial class PilkarzeWidok : ViewModelBase
     {
 
-        private ICommand _addPlayer = null;
+        private ICommand _addPlayer;
         private ICommand _clearImie = null;
         private ICommand _clearNazwisko = null;
         private ICommand _loadPlayer = null;
         private ICommand _modifyPlayer = null;
         private ICommand _deletePlayer = null;
-        
+
         public ICommand AddPlayer
         {
             get
@@ -23,12 +27,11 @@ namespace Pilkarze_MVVM.ViewModel
                     _addPlayer = new RelayCommand(
                         arg =>
                         {
-                            pilkarze.addPlayer(Imie, Nazwisko, Wiek, Waga);
-                            onPropertyChanged(nameof(ListaPilkarzy));
+                            ListaPilkarzy.Add(new WidokPilkarza(new Pilkarz(Imie, Nazwisko, Wiek, Waga)));
+                           // onPropertyChanged(nameof(ListaPilkarzy));
                         },
-                        arg => !(string.IsNullOrEmpty(Imie) || Imie == "Podaj imię" || string.IsNullOrEmpty(Nazwisko) || Nazwisko == "Podaj nazwisko"));
-                }
-                return _addPlayer;
+                        arg => !(string.IsNullOrEmpty(Imie) || Imie == "Podaj imie" || string.IsNullOrEmpty(Nazwisko) || Nazwisko == "Podaj nazwisko"));
+                } return _addPlayer;
             }
         }
         public ICommand ClearImie
@@ -41,7 +44,7 @@ namespace Pilkarze_MVVM.ViewModel
                         arg =>
                         {
                             Imie = null;
-                            onPropertyChanged(nameof(Imie));
+                            OnPropertyChanged(nameof(Imie));
                         },
                         arg => Imie == "Podaj imie");
                 }
@@ -58,7 +61,7 @@ namespace Pilkarze_MVVM.ViewModel
                         arg =>
                         {
                             Nazwisko = null;
-                            onPropertyChanged(nameof(Nazwisko));
+                            OnPropertyChanged(nameof(Nazwisko));
                         },
                         arg => Nazwisko == "Podaj nazwisko");
                 }
@@ -75,12 +78,12 @@ namespace Pilkarze_MVVM.ViewModel
                         arg =>
                         {
 
-                            Pilkarz pilkarz = pilkarze.ListaPilkarzy[SelectedIndex];
+                            WidokPilkarza pilkarz = _pilkarze[SelectedIndex];
                             Imie = pilkarz.Imie;
                             Nazwisko = pilkarz.Nazwisko;
                             Waga = pilkarz.Waga;
                             Wiek = pilkarz.Wiek;
-                            onPropertyChanged(nameof(Imie), nameof(Nazwisko), nameof(Wiek), nameof(Waga));
+                            OnPropertyChanged(nameof(Imie), nameof(Nazwisko), nameof(Wiek), nameof(Waga));
                         },
                         arg => SelectedIndex != -1
                     );
@@ -99,8 +102,11 @@ namespace Pilkarze_MVVM.ViewModel
                         {
                             if (MessageBox.Show("Czy jesteś pewien, że chcesz zmodyfikować zawodnika?", "Modyfikacja zawodnika", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                             {
-                                pilkarze.modifyPlayer(SelectedIndex, Imie, Nazwisko, Wiek, Waga);
-                                onPropertyChanged(nameof(ListaPilkarzy));
+                                WidokPilkarza pilkarz = _pilkarze[SelectedIndex];
+                                pilkarz.Imie = Imie;
+                                pilkarz.Nazwisko = Nazwisko;
+                                pilkarz.Wiek = Wiek;
+                                pilkarz.Waga = Waga;
                             }
                         },
                         arg => SelectedIndex != -1
@@ -120,14 +126,45 @@ namespace Pilkarze_MVVM.ViewModel
                     {
                         if (MessageBox.Show("Czy jesteś pewien, że chcesz usunąć zawodnika?", "Usuwanie zawodnika", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                         {
-                            pilkarze.deletePlayer(SelectedIndex);
-                            onPropertyChanged(nameof(ListaPilkarzy));
+                            _pilkarze.RemoveAt(SelectedIndex);
+                            OnPropertyChanged(nameof(ListaPilkarzy));
                         }
                     },
                         arg => SelectedIndex != -1);
                 }
                 return _deletePlayer;
             }
+        }
+        public ICommand Save
+        {
+            get => new RelayCommand(arg => save(), arg => true);
+        }
+
+        public void load()
+        {
+            if (!File.Exists(_saveFileName))
+                return;
+
+            List<Pilkarz> loading = JsonConvert.DeserializeObject<List<Pilkarz>>(File.ReadAllText(_saveFileName));
+
+            if (loading != null)
+            {
+                foreach (Pilkarz pilkarz in loading)
+                {
+                    _pilkarze.Add(new WidokPilkarza(pilkarz));
+                }
+            }
+        }
+        public void save()
+        {
+            List<Pilkarz> doZapisu = new List<Pilkarz>();
+            foreach (WidokPilkarza pilkarz in _pilkarze)
+            {
+                doZapisu.Add(pilkarz.RepresentedPilkarz);
+            }
+
+            string rawJson = JsonConvert.SerializeObject(doZapisu);
+            File.WriteAllText(_saveFileName, rawJson);
         }
     }
 }
